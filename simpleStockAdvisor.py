@@ -42,6 +42,7 @@ with open('buyOrStrongBuy.csv', newline='') as csvfile:
 
                 # Write symbol and ratios to file if company appears under-valued
                 if yoy > 25 and forwardPE <= sp500PE:
+                    print(symbol + " is a match")
                     file.write(symbol + "," + str(yoy) + "," + str(forwardPE) + "\n")
 
         except:
