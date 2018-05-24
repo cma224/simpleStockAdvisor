@@ -2,7 +2,7 @@
 
 This tool is a simple Python-based script that attempts to find companies that appear undervalued using Yahoo Finance and a CSV generated with TradingView's screening tool.
 
-A CSV was generated using TradingView's screening tool to find stock symbols with "Buy" or "Strong Buy" ratings as of May 23, 2018. This script retrieves each symbol, builds the appropriate URL, and extracts the appropriate statistics on Yahoo Finance.
+A CSV was generated using TradingView's screening tool to find stock symbols with "Buy" or "Strong Buy" ratings as of May 23, 2018. This script retrieves each symbol, builds the appropriate URL, and extracts the appropriate statistics on Yahoo Finance. The stocks that match the criteria below are then placed in another CSV file.
 
 A company is "under-valued" if:
 
