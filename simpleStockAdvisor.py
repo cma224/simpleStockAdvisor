@@ -7,7 +7,8 @@ with open('buyOrStrongBuy.csv', newline='') as csvfile:
 
     # Setup output CSV file, add column names
     file = open("output.csv", "a")
-    file.write("Symbol,YOY,ForwardPE\n")
+    file.write("Symbol,earningsQuarterlyGrowth,ForwardPE\n")
+    file.close()
 
     # Get estimated S&P 500 PE ratio
     sp500url = 'http://www.multpl.com/'
@@ -34,16 +35,18 @@ with open('buyOrStrongBuy.csv', newline='') as csvfile:
             # Search page's HTML source for earnings quarterly growth and forward PE
             with urllib.request.urlopen(url) as response:
                 html = str(response.read())
-                yoy = 100 * \
+                earningsQuarterlyGrowth = 100 * \
                     float(re.search(
                         '\d+\.\d+', str(re.search('earningsQuarterlyGrowth(.*?)"\d+\.\d+(.*?)\d+\.\d+', html))).group())
                 forwardPE = float(
                     re.search('\d+\.\d+', str(re.search('forwardPE(.*?)\d+\.\d+', html).group())).group())
 
                 # Write symbol and ratios to file if company appears under-valued
-                if yoy > 25 and forwardPE <= sp500PE:
+                if earningsQuarterlyGrowth > 50 and forwardPE <= sp500PE:
                     print(symbol + " is a match")
-                    file.write(symbol + "," + str(yoy) + "," + str(forwardPE) + "\n")
+                    file = open("output.csv", "a")
+                    file.write(symbol + "," + str(earningsQuarterlyGrowth) + "," + str(forwardPE) + "\n")
+                    file.close()
 
         except:
             print("Symbol " + symbol + " not found")
