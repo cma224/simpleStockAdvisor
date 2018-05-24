@@ -8,7 +8,7 @@ A company is "under-valued" if:
 
 (1) Its forward PE ratio is less than S&P500 PE ratio
 
-(2) Its quarterly earnings growth exceeds 25%
+(2) Its quarterly earnings growth exceeds 50%
 
 Don't know what a forward PE ratio is? 
 [See here](https://ycharts.com/glossary/terms/forward_pe_ratio)
