@@ -3,31 +3,31 @@ from datetime import datetime
 
 sp500PE = 0
 
-def getStocks(symbol):
+def getStocks(symbols):
 
-    # Iterate through rows, extracting stock symbols
-    try:
-        # Build Yahoo Finance URL using each symbol
-        url = 'https://finance.yahoo.com/quote/' + symbol + '/key-statistics?p=' + symbol
+    for symbol in symbols:
+        try:
+            # Build Yahoo Finance URL using each symbol
+            url = 'https://finance.yahoo.com/quote/' + symbol + '/key-statistics?p=' + symbol
 
-        # Search page's HTML source for earnings quarterly growth and forward PE
-        with urllib.request.urlopen(url) as response:
-            html = str(response.read())
-            earningsQuarterlyGrowth = 100 * \
-                float(re.search(
-                    '\d+\.\d+', str(re.search('earningsQuarterlyGrowth(.*?)"\d+\.\d+(.*?)\d+\.\d+', html))).group())
-            forwardPE = float(
-                re.search('\d+\.\d+', str(re.search('forwardPE(.*?)\d+\.\d+', html).group())).group())
+            # Search page's HTML source for earnings quarterly growth and forward PE
+            with urllib.request.urlopen(url) as response:
+                html = str(response.read())
+                earningsQuarterlyGrowth = 100 * \
+                    float(re.search(
+                        '\d+\.\d+', str(re.search('earningsQuarterlyGrowth(.*?)"\d+\.\d+(.*?)\d+\.\d+', html))).group())
+                forwardPE = float(
+                    re.search('\d+\.\d+', str(re.search('forwardPE(.*?)\d+\.\d+', html).group())).group())
 
-            # Write symbol and ratios to file if company appears under-valued
-            if earningsQuarterlyGrowth > 50 and forwardPE <= sp500PE:
-                print(symbol + " is a match")
-                file = open("output.csv", "a")
-                file.write(symbol + "," + str(earningsQuarterlyGrowth) + "," + str(forwardPE) + "\n")
-                file.close()
+                # Write symbol and ratios to file if company appears under-valued
+                if earningsQuarterlyGrowth > 50 and forwardPE <= sp500PE:
+                    print(symbol + " is a match")
+                    file = open("output.csv", "a")
+                    file.write(symbol + "," + str(earningsQuarterlyGrowth) + "," + str(forwardPE) + "\n")
+                    file.close()
 
-    except:
-        print("Symbol " + symbol + " not found")
+        except:
+            print("Symbol " + symbol + " not found")
 
 
 with open('buyOrStrongBuy.csv', newline='') as csvfile:
@@ -49,13 +49,15 @@ with open('buyOrStrongBuy.csv', newline='') as csvfile:
     # Open CSV file with Buy or Strong Buy ratings, skip header row
     stockNameReader = csv.reader(csvfile)
     next(stockNameReader)
+    symbols = []
     print("sp500PE is " + str(sp500PE))
-    for row in stockNameReader:
-        symbol = row[0].replace(" ", "")
-        print("checking " + symbol)
 
-        # Start threads for each stock symbol
+    for row in stockNameReader:
+        symbols.append(row[0].replace(" ", ""))
+    print(len(symbols))
+    for i in range(0,len(symbols),8):
         try:
-            _thread.start_new_thread(getStocks,(symbol, ))
+            print(str(symbols[i:i+8]))
+            _thread.start_new_thread(getStocks,(symbols[i:i+8], ))
         except:
            print ("Error: unable to start thread " + symbol)
