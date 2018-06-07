@@ -50,10 +50,12 @@ with open('buyOrStrongBuy.csv', newline='') as csvfile:
     stockNameReader = csv.reader(csvfile)
     next(stockNameReader)
     symbols = []
+
     print("sp500PE is " + str(sp500PE))
 
     for row in stockNameReader:
         symbols.append(row[0].replace(" ", ""))
+
     print(len(symbols))
     for i in range(0,len(symbols),8):
         try:
