@@ -1,10 +1,33 @@
-import csv, re, _thread, urllib.request
+import urllib.request
+import re
+import csv
 from datetime import datetime
 
-sp500PE = 0
+with open('buyOrStrongBuy.csv', newline='') as csvfile:
 
-def getStocks(symbols):
-    for symbol in symbols:
+    # Setup output CSV file, add column names
+    file = open("output.csv", "a")
+    file.write("Symbol,earningsQuarterlyGrowth,ForwardPE\n")
+    file.close()
+
+    # Get estimated S&P 500 PE ratio
+    sp500url = 'http://www.multpl.com/'
+    sp500PE = 0
+    with urllib.request.urlopen(sp500url) as response:
+        html = str(response.read())
+        sp500PE = float(
+            str(re.search('\d+\.\d+', str(re.search("\"endLabel\":\[\"(.*?)\"", str(html)).group())).group()))
+        response.close()
+
+    # Open CSV file with Buy or Strong Buy ratings, skip header row
+    stockNameReader = csv.reader(csvfile)
+    next(stockNameReader)
+
+    # Iterate through rows, extracting stock symbols
+    for row in stockNameReader:
+        symbol = row[0].replace(" ", "")
+        print("checking " + symbol)
+
         try:
             # Build Yahoo Finance URL using each symbol
             url = 'https://finance.yahoo.com/quote/' + symbol + '/key-statistics?p=' + symbol
@@ -28,36 +51,4 @@ def getStocks(symbols):
         except:
             print("Symbol " + symbol + " not found")
 
-
-with open('buyOrStrongBuy.csv', newline='') as csvfile:
-    # Setup output CSV file, add column names
-    file = open("output.csv", "a")
-    file.write("Symbol,earningsQuarterlyGrowth,ForwardPE\n")
     file.close()
-
-    # Get estimated S&P 500 PE ratio
-    sp500url = 'http://www.multpl.com/'
-
-    with urllib.request.urlopen(sp500url) as response:
-        html = str(response.read())
-        sp500PE = float(
-            str(re.search('\d+\.\d+', str(re.search("\"endLabel\":\[\"(.*?)\"", str(html)).group())).group()))
-        response.close()
-
-
-    # Open CSV file with Buy or Strong Buy ratings, skip header row
-    stockNameReader = csv.reader(csvfile)
-    next(stockNameReader)
-    symbols = []
-
-    print("sp500PE is " + str(sp500PE))
-
-    for row in stockNameReader:
-        symbols.append(row[0].replace(" ", ""))
-    
-    # Each thread checks 8 stocks
-    for i in range(0,len(symbols),8):
-        try:
-            _thread.start_new_thread(getStocks,(symbols[i:i+8], ))
-        except:
-           print ("Error: unable to start thread " + symbol)
