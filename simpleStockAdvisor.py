@@ -7,7 +7,7 @@ with open('buyOrStrongBuy.csv', newline='') as csvfile:
 
     # Setup output CSV file, add column names
     file = open("output.csv", "a")
-    file.write("Symbol,earningsQuarterlyGrowth,ForwardPE\n")
+    file.write("Symbol,closing,earningsQuarterlyGrowth,ForwardPE\n")
     file.close()
 
     # Get estimated S&P 500 PE ratio
@@ -41,11 +41,11 @@ with open('buyOrStrongBuy.csv', newline='') as csvfile:
                 forwardPE = float(
                     re.search('\d+\.\d+', str(re.search('forwardPE(.*?)\d+\.\d+', html).group())).group())
 
-                # Write symbol and ratios to file if company appears under-valued
+                # Write symbol, closing price, and ratios to file if company appears under-valued
                 if earningsQuarterlyGrowth > 50 and forwardPE <= sp500PE:
                     print(symbol + " is a match")
                     file = open("output.csv", "a")
-                    file.write(symbol + "," + str(earningsQuarterlyGrowth) + "," + str(forwardPE) + "\n")
+                    file.write(symbol + "," + str(row[1]) + "," + str(earningsQuarterlyGrowth) + "," + str(forwardPE) + "\n")
                     file.close()
 
         except:
