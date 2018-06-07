@@ -1,7 +1,4 @@
-import urllib.request
-import re
-import csv
-import _thread
+import csv, re, _thread, urllib.request
 from datetime import datetime
 
 sp500PE = 0
