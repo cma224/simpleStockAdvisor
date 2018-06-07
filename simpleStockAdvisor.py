@@ -4,7 +4,6 @@ from datetime import datetime
 sp500PE = 0
 
 def getStocks(symbols):
-
     for symbol in symbols:
         try:
             # Build Yahoo Finance URL using each symbol
@@ -55,11 +54,10 @@ with open('buyOrStrongBuy.csv', newline='') as csvfile:
 
     for row in stockNameReader:
         symbols.append(row[0].replace(" ", ""))
-
-    print(len(symbols))
+    
+    # Each thread checks 8 stocks
     for i in range(0,len(symbols),8):
         try:
-            print(str(symbols[i:i+8]))
             _thread.start_new_thread(getStocks,(symbols[i:i+8], ))
         except:
            print ("Error: unable to start thread " + symbol)
