@@ -7,8 +7,9 @@ with open('buyOrStrongBuy.csv', newline='') as csvfile:
 
     # Setup output CSV file, add column names
     file = open("output.csv", "a")
-    file.write("Symbol,closing,earningsQuarterlyGrowth,ForwardPE\n")
+    file.write("Name,Symbol,closing,earningsQuarterlyGrowth,ForwardPE\n")
     file.close()
+
 
     # Get estimated S&P 500 PE ratio
     sp500url = 'http://www.multpl.com/'
@@ -40,12 +41,13 @@ with open('buyOrStrongBuy.csv', newline='') as csvfile:
                         '\d+\.\d+', str(re.search('earningsQuarterlyGrowth(.*?)"\d+\.\d+(.*?)\d+\.\d+', html))).group())
                 forwardPE = float(
                     re.search('\d+\.\d+', str(re.search('forwardPE(.*?)\d+\.\d+', html).group())).group())
-
+                name = str(re.search('\|(.*?)Stock',str(re.search('<title>(.*?)</title>',html).group())).group())[2:]
+                name = name[:name.index(" Stock")]
                 # Write symbol, closing price, and ratios to file if company appears under-valued
                 if earningsQuarterlyGrowth > 50 and forwardPE <= sp500PE:
                     print(symbol + " is a match")
                     file = open("output.csv", "a")
-                    file.write(symbol + "," + str(row[1]) + "," + str(earningsQuarterlyGrowth) + "," + str(forwardPE) + "\n")
+                    file.write(name + "," + symbol + "," + str(row[1]) + "," + str(earningsQuarterlyGrowth) + "," + str(forwardPE) + "\n")
                     file.close()
 
         except:
