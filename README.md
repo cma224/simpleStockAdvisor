@@ -1,4 +1,5 @@
 # simpleStockAdvisor
+## Note: Since publishing this repo, TradingView has since put the ability to download CSVs from their stock screener behind a paywall.
 
 This tool is a simple Python-based script that attempts to find companies that appear undervalued using Yahoo Finance and a CSV generated with TradingView's screening tool.
 
